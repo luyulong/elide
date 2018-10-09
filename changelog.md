@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.2.9
+**Fixes**
+ * Issue#703
+
 ## 4.2.8
 **Fixes**
  * Issue#696

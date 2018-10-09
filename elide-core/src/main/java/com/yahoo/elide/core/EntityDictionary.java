@@ -715,9 +715,7 @@ public class EntityDictionary {
      * @param cls         Class to bind initialization
      */
     public <T> void bindInitializer(Initializer<T> initializer, Class<T> cls) {
-        if (! entityBindings.containsKey(lookupEntityClass(cls))) {
-            bindEntity(cls);
-        }
+        bindIfUnbound(cls);
         getEntityBinding(cls).setInitializer(initializer);
     }
 
@@ -1026,6 +1024,8 @@ public class EntityDictionary {
                             Class<? extends Annotation> annotationClass,
                             String fieldOrMethodName,
                             LifeCycleHook callback) {
+
+        bindIfUnbound(entityClass);
         getEntityBinding(entityClass).bindTrigger(annotationClass, fieldOrMethodName, callback);
     }
 
@@ -1045,6 +1045,7 @@ public class EntityDictionary {
                             Class<? extends Annotation> annotationClass,
                             LifeCycleHook callback,
                             boolean allowMultipleInvocations) {
+        bindIfUnbound(entityClass);
         if (allowMultipleInvocations) {
             getEntityBinding(entityClass).bindTrigger(annotationClass, callback);
         } else {
@@ -1126,5 +1127,15 @@ public class EntityDictionary {
      */
     public boolean hasBinding(Class<?> cls) {
         return bindJsonApiToEntity.contains(cls);
+    }
+
+    /**
+     * Binds the entity class if not yet bound.
+     * @param entityClass the class to bind.
+     */
+    private void bindIfUnbound(Class<?> entityClass) {
+        if (! entityBindings.containsKey(lookupEntityClass(entityClass))) {
+            bindEntity(entityClass);
+        }
     }
 }
